@@ -1,3 +1,4 @@
+#include "UTILS.hpp"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -5,6 +6,8 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/VideoMode.hpp>
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 enum class GameState {
     Menu,
@@ -14,9 +17,13 @@ enum class GameState {
 
 int main() {
     GameState state = GameState::Menu;
-
-    sf::RenderWindow window(sf::VideoMode({800, 800}), "Pong :D");
+    sf::Font font;
     
+    sf::RenderWindow window(sf::VideoMode({800, 800}), "Pong :D");
+    if (!font.openFromFile("Fonts/VT323/VT323-Regular.ttf")) {
+        println("Failed to load font VT323");
+    }
+
     sf::RectangleShape RectangleEnemy({10.f, 100.f});
     RectangleEnemy.setPosition({780.f, 10.f});
     RectangleEnemy.setFillColor(sf::Color::Blue);
@@ -25,15 +32,10 @@ int main() {
     rectangle.setPosition({20.f, 300.f});
     rectangle.setFillColor(sf::Color::Blue);
 
-    sf::RectangleShape PlayButton({50.f, 20.f});
-    PlayButton.setPosition({
-            window.getSize().x / 4.f -100.f,
-            window.getSize().y /6.f -100.f,
-            });
+    sf::RectangleShape PlayButton({100.f, 50.f});
+    PlayButton.setPosition({626.f, 115.f});
     sf::Color PlayButtonColour(10, 145, 154);
     PlayButton.setFillColor(PlayButtonColour);
-
-
 
     sf::CircleShape circle(10.f);
     circle.setPosition({200.f, 500.f});
@@ -58,6 +60,12 @@ int main() {
                 rectangle.move({0.f, speed});
                }
             }
+
+            if (const auto* MousePressed = event->getIf<sf::Event::MouseButtonPressed>()) {
+                print(MousePressed->position.x);
+                print(",");
+                println(MousePressed->position.y);
+            }
         }
 
         window.clear();
@@ -65,10 +73,11 @@ int main() {
         if (state == GameState::Menu) {
            window.draw(PlayButton);
         }
-
-        window.draw(rectangle);
-        window.draw(RectangleEnemy);
-        window.draw(circle);
+        if (state == GameState::Playing) {
+           window.draw(rectangle);
+           window.draw(RectangleEnemy);
+           window.draw(circle);
+        }
 
         window.display();
     }
