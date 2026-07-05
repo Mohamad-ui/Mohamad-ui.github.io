@@ -50,6 +50,9 @@ int main() {
         }
 
         window.clear();
+        if (state == GameState::Menu) {
+            window.draw(rectangle);
+        }
 
         window.draw(rectangle);
         window.draw(rectangle_enemy);
@@ -60,4 +63,3 @@ int main() {
 
     return 0;
 }
-
