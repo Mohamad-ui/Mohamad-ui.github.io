@@ -1,3 +1,4 @@
+#include <SFML/Window/Mouse.hpp>
 #include "UTILS.hpp"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
@@ -8,6 +9,7 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <optional>
 
 enum class GameState {
     Menu,
@@ -18,9 +20,9 @@ enum class GameState {
 int main() {
     GameState state = GameState::Menu;
     sf::Font font;
-    
+
     sf::RenderWindow window(sf::VideoMode({800, 800}), "Pong :D");
-    if (!font.openFromFile("Fonts/VT323/VT323-Regular.ttf")) {
+    if (!font.openFromFile("assets/fonts/VT323/VT323-Regular.ttf")) {
         println("Failed to load font VT323");
     }
 
@@ -33,9 +35,15 @@ int main() {
     rectangle.setFillColor(sf::Color::Blue);
 
     sf::RectangleShape PlayButton({100.f, 50.f});
-    PlayButton.setPosition({626.f, 115.f});
+    PlayButton.setPosition({624.f, 143.f});
     sf::Color PlayButtonColour(10, 145, 154);
     PlayButton.setFillColor(PlayButtonColour);
+
+    sf::Text PlayButtonText(font);
+    PlayButtonText.setString("Play");
+    PlayButtonText.setCharacterSize(24);
+    PlayButtonText.setFillColor(sf::Color::White);
+    PlayButtonText.setPosition({652.f, 150.f});
 
     sf::CircleShape circle(10.f);
     circle.setPosition({200.f, 500.f});
@@ -66,12 +74,20 @@ int main() {
                 print(",");
                 println(MousePressed->position.y);
             }
+
+            if (state == GameState::Menu && event->is<sf::Event::MouseButtonPressed>()) {
+                auto mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                if (PlayButton.getGlobalBounds().contains(mousePosition)) {
+                    state = GameState::Playing;
+                }
+            }
         }
 
         window.clear();
 
         if (state == GameState::Menu) {
            window.draw(PlayButton);
+           window.draw(PlayButtonText); 
         }
         if (state == GameState::Playing) {
            window.draw(rectangle);
