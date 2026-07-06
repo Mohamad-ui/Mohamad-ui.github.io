@@ -38,10 +38,17 @@ int main() {
     rectangle.setFillColor(sf::Color::Blue);
 
     sf::Text PlayButtonText(font);
-    PlayButtonText.setString("sf::Play");
+    PlayButtonText.setString("std::Play");
     PlayButtonText.setCharacterSize(24);
     PlayButtonText.setFillColor(sf::Color::White);
     PlayButtonText.setPosition({652.f, 150.f});
+
+    sf::Text CreditsButton(font);
+    CreditsButton.setString("sf::Credits");
+    CreditsButton.setCharacterSize(24);
+    CreditsButton.setFillColor(sf::Color::White);
+    CreditsButton.setPosition({652.f, 200.f});
+
 
     sf::CircleShape circle(10.f);
     circle.setPosition({200.f, 500.f});
@@ -79,6 +86,13 @@ int main() {
                     state = GameState::Playing;
                 }
             }
+
+            if (state == GameState::Credits && event->is<sf::Event::MouseButtonPressed>()) {
+                auto mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+                if (PlayButtonText.getGlobalBounds().contains(mousePosition)) {
+                    state = GameState::Playing;
+                }
+            }
         }
 
         window.clear();
@@ -86,6 +100,11 @@ int main() {
         if (state == GameState::Menu) {
            window.draw(PlayButtonText); 
         }
+        
+        if (state == GameState::Credits) {
+            window.draw(CreditsButton);
+        }
+
         if (state == GameState::Playing) {
            window.draw(rectangle);
            window.draw(RectangleEnemy);
