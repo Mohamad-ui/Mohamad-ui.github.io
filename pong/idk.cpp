@@ -1,5 +1,6 @@
 #include <SFML/Window/Mouse.hpp>
 #include "UTILS.hpp"
+#include "CREDITS.hpp"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>

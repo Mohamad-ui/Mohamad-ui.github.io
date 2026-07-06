@@ -3,21 +3,20 @@
 
 #include <iostream>
 
-using namespace std;
 
 template<typename...Args>
     void println(Args... args) {
-        (cout <<... << args) << std::endl;
+        (std::cout <<... << args) << std::endl;
         }    
 
 template<typename...Args>
     void print(Args... args) {
-        (cout <<... << args);
+        (std::cout <<... << args);
         }    
     
 template<typename...Args>
     void input(Args&... args) {
-        (cin >>... >> args);
+        (std::cin >>... >> args);
         }        
     
 
