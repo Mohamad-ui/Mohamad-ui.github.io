@@ -14,6 +14,8 @@
 enum class GameState {
     Menu,
     Playing,
+    Settings,
+    Credits,
     Paused
 };
 
