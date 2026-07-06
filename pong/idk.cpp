@@ -36,13 +36,8 @@ int main() {
     rectangle.setPosition({20.f, 300.f});
     rectangle.setFillColor(sf::Color::Blue);
 
-    sf::RectangleShape PlayButton({100.f, 50.f});
-    PlayButton.setPosition({624.f, 143.f});
-    sf::Color PlayButtonColour(10, 145, 154);
-    PlayButton.setFillColor(PlayButtonColour);
-
     sf::Text PlayButtonText(font);
-    PlayButtonText.setString("Play");
+    PlayButtonText.setString("sf::Play");
     PlayButtonText.setCharacterSize(24);
     PlayButtonText.setFillColor(sf::Color::White);
     PlayButtonText.setPosition({652.f, 150.f});
@@ -79,7 +74,7 @@ int main() {
 
             if (state == GameState::Menu && event->is<sf::Event::MouseButtonPressed>()) {
                 auto mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                if (PlayButton.getGlobalBounds().contains(mousePosition)) {
+                if (PlayButtonText.getGlobalBounds().contains(mousePosition)) {
                     state = GameState::Playing;
                 }
             }
@@ -88,7 +83,6 @@ int main() {
         window.clear();
 
         if (state == GameState::Menu) {
-           window.draw(PlayButton);
            window.draw(PlayButtonText); 
         }
         if (state == GameState::Playing) {
