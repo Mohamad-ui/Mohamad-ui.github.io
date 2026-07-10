@@ -1,4 +1,5 @@
 #include <SFML/Window/Mouse.hpp>
+#include "SFML/System/Vector2.hpp"
 #include "UTILS.hpp"
 #include "CREDITS.hpp"
 #include <SFML/Graphics/CircleShape.hpp>
@@ -11,6 +12,7 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <optional>
+#include <cmath>
 
 enum class GameState {
     Menu,
@@ -23,20 +25,21 @@ enum class GameState {
 int main() {
     GameState state = GameState::Menu;
     sf::Font font;
+    sf::Vector2 velocity(5.f, 0.f);
 
     sf::RenderWindow window(sf::VideoMode({800, 800}), "Pong :D");
 
     if (!font.openFromFile("assets/fonts/VT323/VT323-Regular.ttf")) {
-        println("Failed to load font CourierPrime");
+        println("Failed to load font VT323");
     }
 
-    sf::RectangleShape RectangleEnemy({10.f, 100.f});
-    RectangleEnemy.setPosition({780.f, 10.f});
-    RectangleEnemy.setFillColor(sf::Color::Blue);
+    sf::RectangleShape Right_Paddle({10.f, 100.f});
+    Right_Paddle.setPosition({780.f, 10.f});
+    Right_Paddle.setFillColor(sf::Color::Blue);
 
-    sf::RectangleShape rectangle({10.f, 100.f});
-    rectangle.setPosition({20.f, 300.f});
-    rectangle.setFillColor(sf::Color::Blue);
+    sf::RectangleShape Left_Paddle({10.f, 100.f});
+    Left_Paddle.setPosition({20.f, 300.f});
+    Left_Paddle.setFillColor(sf::Color::Blue);
 
     sf::Text PlayButton(font);
     PlayButton.setString("std::Play");
@@ -78,11 +81,11 @@ int main() {
 
             if (const auto* key = event->getIf<sf::Event::KeyPressed>()) {
                if (key->code == sf::Keyboard::Key::W) {
-                rectangle.move({0.f, -speed});
+                Left_Paddle.move({0.f, -speed});
                }
             
                 if (key->code == sf::Keyboard::Key::S) {
-                rectangle.move({0.f, speed});
+                Left_Paddle.move({0.f, speed});
                }
             }
 
@@ -107,6 +110,14 @@ int main() {
             }
         }
 
+        if (circle.getGlobalBounds().findIntersection(Left_Paddle.getGlobalBounds())) {
+            velocity.x = std::abs(velocity.x); 
+        }
+
+        if (circle.getGlobalBounds().findIntersection(Right_Paddle.getGlobalBounds())) {
+            velocity.x = -std::abs(velocity.x); 
+        }
+
         window.clear();
 
         if (state == GameState::Menu) {
@@ -120,8 +131,8 @@ int main() {
         }
 
         if (state == GameState::Playing) {
-           window.draw(rectangle);
-           window.draw(RectangleEnemy);
+           window.draw(Left_Paddle);
+           window.draw(Right_Paddle);
            window.draw(circle);
         }
 
