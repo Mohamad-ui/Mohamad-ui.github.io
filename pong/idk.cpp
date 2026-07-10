@@ -25,8 +25,9 @@ int main() {
     sf::Font font;
 
     sf::RenderWindow window(sf::VideoMode({800, 800}), "Pong :D");
+
     if (!font.openFromFile("assets/fonts/VT323/VT323-Regular.ttf")) {
-        println("Failed to load font VT323");
+        println("Failed to load font CourierPrime");
     }
 
     sf::RectangleShape RectangleEnemy({10.f, 100.f});
@@ -37,18 +38,29 @@ int main() {
     rectangle.setPosition({20.f, 300.f});
     rectangle.setFillColor(sf::Color::Blue);
 
-    sf::Text PlayButtonText(font);
-    PlayButtonText.setString("std::Play");
-    PlayButtonText.setCharacterSize(24);
-    PlayButtonText.setFillColor(sf::Color::White);
-    PlayButtonText.setPosition({652.f, 150.f});
+    sf::Text PlayButton(font);
+    PlayButton.setString("std::Play");
+    PlayButton.setCharacterSize(24);
+    PlayButton.setFillColor(sf::Color::White);
+    PlayButton.setPosition({650.f, 250.f});
+
+    sf::Text TitleText(font);
+    TitleText.setString("#Include <Pong>");
+    TitleText.setCharacterSize(48);
+    TitleText.setFillColor(sf::Color::White);
+    TitleText.setPosition({170.f, 100.f});
 
     sf::Text CreditsButton(font);
     CreditsButton.setString("sf::Credits");
     CreditsButton.setCharacterSize(24);
     CreditsButton.setFillColor(sf::Color::White);
-    CreditsButton.setPosition({652.f, 200.f});
+    CreditsButton.setPosition({650.f, 300.f});
 
+    sf::Text CreditsText(font);
+    CreditsText.setString("Name's Alpaca... Edgy Alpaca");
+    CreditsText.setCharacterSize(24);
+    CreditsText.setFillColor(sf::Color::White);
+    CreditsText.setPosition({400.f, 400.f});
 
     sf::CircleShape circle(10.f);
     circle.setPosition({200.f, 500.f});
@@ -82,15 +94,15 @@ int main() {
 
             if (state == GameState::Menu && event->is<sf::Event::MouseButtonPressed>()) {
                 auto mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                if (PlayButtonText.getGlobalBounds().contains(mousePosition)) {
+                if (PlayButton.getGlobalBounds().contains(mousePosition)) {
                     state = GameState::Playing;
                 }
             }
 
-            if (state == GameState::Credits && event->is<sf::Event::MouseButtonPressed>()) {
+            if (state == GameState::Menu && event->is<sf::Event::MouseButtonPressed>()) {
                 auto mousePosition = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-                if (PlayButtonText.getGlobalBounds().contains(mousePosition)) {
-                    state = GameState::Playing;
+                if (CreditsButton.getGlobalBounds().contains(mousePosition)) {
+                    state = GameState::Credits;
                 }
             }
         }
@@ -98,11 +110,13 @@ int main() {
         window.clear();
 
         if (state == GameState::Menu) {
-           window.draw(PlayButtonText); 
+           window.draw(PlayButton); 
+           window.draw(CreditsButton);
+           window.draw(TitleText);
         }
-        
+
         if (state == GameState::Credits) {
-            window.draw(CreditsButton);
+            window.draw(CreditsText);
         }
 
         if (state == GameState::Playing) {
