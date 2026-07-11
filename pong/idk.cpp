@@ -1,7 +1,7 @@
 #include <SFML/Window/Mouse.hpp>
-#include "SFML/System/Vector2.hpp"
+#include <SFML/System/Vector2.hpp>
+#include "SFML/Graphics/Texture.hpp"
 #include "UTILS.hpp"
-#include "CREDITS.hpp"
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -11,6 +11,8 @@
 #include <SFML/Window/VideoMode.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <cstdlib>
 #include <optional>
 #include <cmath>
 
@@ -19,26 +21,32 @@ enum class GameState {
     Playing,
     Settings,
     Credits,
+    Donate,
     Paused
 };
 
 int main() {
     GameState state = GameState::Menu;
     sf::Font font;
-    sf::Vector2 velocity(5.f, 0.f);
+    sf::Vector2f velocity(5.f, 5.f);
+    sf::Texture texture;
 
     sf::RenderWindow window(sf::VideoMode({800, 800}), "Pong :D");
+
+    if (!texture.loadFromFile("assets/images/StudioProfileArt/EdgyAlapca.png")) {
+        println("Failed to load StudioProfileArt"); 
+    }
 
     if (!font.openFromFile("assets/fonts/VT323/VT323-Regular.ttf")) {
         println("Failed to load font VT323");
     }
 
     sf::RectangleShape Right_Paddle({10.f, 100.f});
-    Right_Paddle.setPosition({780.f, 10.f});
+    Right_Paddle.setPosition({780.f, 380.f});
     Right_Paddle.setFillColor(sf::Color::Blue);
 
     sf::RectangleShape Left_Paddle({10.f, 100.f});
-    Left_Paddle.setPosition({20.f, 300.f});
+    Left_Paddle.setPosition({10.f, 380.f});
     Left_Paddle.setFillColor(sf::Color::Blue);
 
     sf::Text PlayButton(font);
@@ -59,16 +67,20 @@ int main() {
     CreditsButton.setFillColor(sf::Color::White);
     CreditsButton.setPosition({650.f, 300.f});
 
+    sf::Sprite StudioProfileArt(texture);
+    StudioProfileArt.setPosition({200.f, 200.f}); 
+
     sf::Text CreditsText(font);
     CreditsText.setString("Name's Alpaca... Edgy Alpaca");
     CreditsText.setCharacterSize(24);
     CreditsText.setFillColor(sf::Color::White);
-    CreditsText.setPosition({400.f, 400.f});
+    CreditsText.setPosition({250.f, 550.f});
 
-    sf::CircleShape circle(10.f);
-    circle.setPosition({200.f, 500.f});
-    circle.setFillColor(sf::Color::Blue);
+    sf::CircleShape Ball(10.f);
+    Ball.setPosition({30.f, 400.f});
+    Ball.setFillColor(sf::Color::Blue);
 
+    StudioProfileArt.setScale({0.3f, 0.3f});
 
     float speed = 10.f;
 
@@ -110,11 +122,28 @@ int main() {
             }
         }
 
-        if (circle.getGlobalBounds().findIntersection(Left_Paddle.getGlobalBounds())) {
+
+        if (Ball.getPosition().x < 0) {
+            window.close();
+        }
+
+        if (Ball.getPosition().x > 800) {
+            window.close();
+        }
+
+        if (Ball.getPosition().y < 0) {
+            velocity.y = std::abs(velocity.y);    
+        }    
+
+        if (Ball.getPosition().y > 780) {
+            velocity.y = -std::abs(velocity.y);
+        }
+
+        if (Ball.getGlobalBounds().findIntersection(Left_Paddle.getGlobalBounds())) {
             velocity.x = std::abs(velocity.x); 
         }
 
-        if (circle.getGlobalBounds().findIntersection(Right_Paddle.getGlobalBounds())) {
+        if (Ball.getGlobalBounds().findIntersection(Right_Paddle.getGlobalBounds())) {
             velocity.x = -std::abs(velocity.x); 
         }
 
@@ -128,12 +157,14 @@ int main() {
 
         if (state == GameState::Credits) {
             window.draw(CreditsText);
+            window.draw(StudioProfileArt);
         }
 
         if (state == GameState::Playing) {
            window.draw(Left_Paddle);
            window.draw(Right_Paddle);
-           window.draw(circle);
+           window.draw(Ball);
+           Ball.move(velocity);
         }
 
         window.display();
